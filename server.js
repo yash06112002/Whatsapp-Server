@@ -7,16 +7,16 @@ import multer from 'multer';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 9000;
+const port = process.env.PORT || 3000;
 const storage = new Storage({
-    projectId: 'atomic-nation-447006-p5',
-    keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
+    projectId: process.env.GCP_PROJECT_ID,
+    credentials: process.env.GCP_SA_KEY,
 });
 
 app.use(express.json());
 app.use(cors());
 
-const bucketName = 'whatsapp-group-chat-media';
+const bucketName = process.env.GCP_BUCKET_NAME;
 
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage });
