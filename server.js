@@ -13,6 +13,8 @@ const storage = new Storage({
     filePath: process.env.GCP_SA_KEY_FILE_PATH,
 });
 
+console.log(storage);
+
 app.use(express.json());
 app.use(cors());
 
@@ -28,6 +30,8 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
     const fileName = `${Date.now()}_${req.file.originalname}`;
     const blob = storage.bucket(bucketName).file(fileName);
+    console.log(blob);
+    
     const blobStream = blob.createWriteStream();
 
     blobStream.on('error', (err) => {
