@@ -5,6 +5,8 @@ import { Storage } from '@google-cloud/storage';
 import multer from 'multer';
 
 dotenv.config();
+console.log(process.env);
+
 
 const app = express();
 const port = process.env.PORT || 3000;
