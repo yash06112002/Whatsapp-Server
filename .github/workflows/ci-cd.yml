@@ -68,5 +68,5 @@ jobs:
             docker rm whatsapp-media || true &&
             docker run --env-file /home/kansaray06/.env -d --name whatsapp-media \
                 -p 80:3000 \
-                '"yashkansara/whatsapp-media:latest"'
+                yashkansara/whatsapp-media:latest
             '
