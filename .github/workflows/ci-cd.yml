@@ -62,7 +62,7 @@ jobs:
             docker run -d --name ${{ secrets.DOCKER_CONTAINER }} \
                 -p 80:3000 \
                 -e PORT="${{ secrets.PORT }}" \
-                -e GCP_SA_KEY='${{ secrets.GCP_SA_KEY }}' \
+                -e GCP_SA_KEY="${{ secrets.GCP_SA_KEY }}" \
                 -e GCP_PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}" \
                 -e GCP_BUCKET_NAME="${{ secrets.GCP_BUCKET_NAME }}" \ 
                 '"${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest"'
