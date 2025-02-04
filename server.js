@@ -32,6 +32,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
     blobStream.on('error', (err) => {
         console.error(err);
+        console.log(err.response);
         res.status(500).send('Failed to upload file.');
     });
 
