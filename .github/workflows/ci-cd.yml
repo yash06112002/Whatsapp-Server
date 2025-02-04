@@ -55,6 +55,10 @@ jobs:
 
       # Step 7: Deploy Docker Container to VM
       - name: Deploy Docker container to VM
+      env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_BUCKET_NAME: ${{ secrets.GCP_BUCKET_NAME }}
         run: |
             gcloud compute ssh ${{ secrets.GCP_INSTANCE_NAME }} --zone "asia-south1-c" --command '
             docker stop ${{ secrets.DOCKER_CONTAINER }} || true &&
@@ -62,8 +66,8 @@ jobs:
             docker run -d --name ${{ secrets.DOCKER_CONTAINER }} \
                 -p 80:3000 \
                 -e PORT="${{ secrets.PORT }}" \
-                -e GCP_PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}" \
-                -e GCP_BUCKET_NAME="${{ secrets.GCP_BUCKET_NAME }}" \ 
-                --env-file <(echo "GCP_SA_KEY=$GCP_SA_KEY") \
+                -e GCP_SA_KEY='$GCP_SA_KEY' \
+                -e GCP_PROJECT_ID='$GCP_PROJECT_ID' \
+                -e GCP_BUCKET_NAME='$GCP_BUCKET_NAME' \
                 '"${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest"'
             '
