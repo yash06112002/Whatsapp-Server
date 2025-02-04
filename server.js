@@ -10,7 +10,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const storage = new Storage({
     projectId: process.env.GCP_PROJECT_ID,
-    credentials: process.env.GCP_SA_KEY,
+    filePath: process.env.GCP_SA_KEY_FILE_PATH,
 });
 
 app.use(express.json());
