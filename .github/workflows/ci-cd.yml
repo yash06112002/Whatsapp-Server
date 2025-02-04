@@ -64,9 +64,9 @@ jobs:
       - name: Deploy Docker container to VM
         run: |
             gcloud compute ssh ${{ secrets.GCP_INSTANCE_NAME }} --zone "asia-south1-c" --command '
-            docker stop ${{ secrets.DOCKER_CONTAINER }} || true &&
-            docker rm ${{ secrets.DOCKER_CONTAINER }} || true &&
-            docker run --env-file /home/kansaray06/.env -d --name ${{ secrets.DOCKER_CONTAINER }} \
+            docker stop whatsapp-media || true &&
+            docker rm whatsapp-media || true &&
+            docker run --env-file /home/kansaray06/.env -d --name whatsapp-media \
                 -p 80:3000 \
-                '"${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest"'
+                '"yashkansara/whatsapp-media:latest"'
             '
