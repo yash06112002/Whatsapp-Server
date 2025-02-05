@@ -5,17 +5,13 @@ import { Storage } from '@google-cloud/storage';
 import multer from 'multer';
 
 dotenv.config();
-console.log(process.env);
-
 
 const app = express();
 const port = process.env.PORT || 3000;
 const storage = new Storage({
     projectId: process.env.GCP_PROJECT_ID,
-    credentials: process.env.GCP_SA_KEY,
+    credentials: JSON.parse(process.env.GCP_SA_KEY_STRING),
 });
-
-console.log(storage);
 
 app.use(express.json());
 app.use(cors());
@@ -32,13 +28,11 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
     const fileName = `${Date.now()}_${req.file.originalname}`;
     const blob = storage.bucket(bucketName).file(fileName);
-    console.log(blob);
     
     const blobStream = blob.createWriteStream();
 
     blobStream.on('error', (err) => {
         console.log(err);
-        console.log(err.response);
         res.status(500).send(err);
     });
 

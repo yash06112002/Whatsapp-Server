@@ -53,20 +53,13 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
 
-      - name: Verify ENV vars
-        run: |
-          echo ${{ secrets.GCP_INSTANCE_NAME }}
-          echo ${{ secrets.DOCKER_CONTAINER }}
-          echo ${{ secrets.DOCKER_USERNAME }}
-          echo ${{ secrets.DOCKER_REPO }}
-
       # Step 7: Deploy Docker Container to VM
       - name: Deploy Docker container to VM
         run: |   
             gcloud compute ssh ${{ secrets.GCP_INSTANCE_NAME }} --zone "asia-south1-c" --command '
             docker stop whatsapp-media || true &&
             docker rm whatsapp-media || true &&
-            docker run --env-file /home/kansaray06/.env -e GCP_SA_KEY="$(cat /home/kansaray06/gcp_sa.json | tr -d '\n' | sed 's/"/\\"/g')" -d --name whatsapp-media \
+            docker run --env-file /home/kansaray06/.env -d --name whatsapp-media \
                 -p 80:3000 \
                 yashkansara/whatsapp-media:latest
             '
