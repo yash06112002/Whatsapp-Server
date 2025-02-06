@@ -1,3 +1,6 @@
 node_modules
 .env
 gcp_sa.json
+cert.pem
+key.pem
+stringify.js

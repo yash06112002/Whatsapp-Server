@@ -1,3 +1,5 @@
+import fs from 'fs';
+import https from 'https';
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -21,6 +23,9 @@ const bucketName = process.env.GCP_BUCKET_NAME;
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage });
 
+app.get('/', (req, res) => {
+    res.send('Media Server is running'); 
+});
 app.post('/upload', upload.single('file'), async (req, res) => {
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
@@ -44,4 +49,16 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     blobStream.end(req.file.buffer);
 });
 
-app.listen(port, () => console.log('Server running on port ' + port));
+const privateKey = fs.readFileSync(process.env.SSL_KEY_PATH, 'utf8');
+const certificate = fs.readFileSync(process.env.SSL_CERT_PATH, 'utf8');
+
+const credentials = {
+    key: privateKey,
+    cert: certificate,
+};
+
+const httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(port, () => {
+    console.log('HTTPS Server running on port ' + port);
+});
