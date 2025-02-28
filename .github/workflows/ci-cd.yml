@@ -60,6 +60,6 @@ jobs:
             docker stop whatsapp-media || true &&
             docker rm whatsapp-media || true &&
             docker run --env-file /home/kansaray06/.env -v /home/kansaray06:/app/ssl -d --name whatsapp-media \
-                -p 443:3000 \
+                -p 80:3000 \
                 yashkansara/whatsapp-media:latest
             '
