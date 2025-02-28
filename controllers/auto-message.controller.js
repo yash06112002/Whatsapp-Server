@@ -30,7 +30,7 @@ router.post('/generate', async (req, res) => {
         const randomAgent = agents[Math.floor(Math.random() * agents.length)];
 
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDUhf4QNxOysCr6AycZf_ktVTfL4lTkkHo`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
             {
                 method: 'POST',
                 headers: {
