@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mediaController from './controllers/media.controller.js';
 import autoMessageController from './controllers/auto-message.controller.js';
+import guestUserController from './controllers/guestUser.controller.js';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 
 app.use('/media', mediaController);
 app.use('/auto-message', autoMessageController);
+app.use('/guest-user', guestUserController);
 
 app.listen(port, () => {
     console.log('HTTPS Server running on port ' + port);

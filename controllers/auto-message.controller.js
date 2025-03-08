@@ -54,9 +54,7 @@ router.post('/generate', async (req, res) => {
             timestamp: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
             isAI: true
         };
-
         await db.collection('rooms').doc(roomId).collection('messages').add(aiMessage);
-
         res.json({ success: true, message: result });
     } catch (error) {
         console.error('Error generating AI message:', error);
