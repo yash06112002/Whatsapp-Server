@@ -1,0 +1,65 @@
+name: CI-CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy app to GCP
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Google Cloud Authentication (Optional)
+      - name: Google Cloud Auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY_2 }}'
+          project_id: ${{ secrets.GCP_PROJECT_ID_2 }}
+
+      # Step 3: Set up Cloud SDK (Optional)
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      # Step 4: Install Docker and configure permissions on VM
+      - name: Install Docker on VM and fix permissions
+        run: |
+          gcloud compute ssh ${{ secrets.GCP_INSTANCE_NAME_2 }} --zone "asia-south1-c" --command "
+            sudo apt-get update &&
+            sudo apt-get install -y docker.io &&
+            sudo systemctl enable --now docker &&
+            sudo usermod -aG docker $USER &&  # Add the user to Docker group
+            newgrp docker  # Apply the new group membership immediately
+          "
+
+      # Step 5: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Step 6: Build and Push Docker Image
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
+
+      # Step 7: Deploy Docker Container to VM
+      - name: Deploy Docker container to VM
+        run: |   
+            gcloud compute ssh ${{ secrets.GCP_INSTANCE_NAME_2 }} --zone "asia-south1-c" --command '
+            docker stop whatsapp-media || true &&
+            docker rm whatsapp-media || true &&
+            docker run --env-file /home/kansaray06/.env -v /home/kansaray06:/app/ssl -d --name whatsapp-media \
+                -p 80:3000 \
+                yashkansara/whatsapp-media:latest
+            '
